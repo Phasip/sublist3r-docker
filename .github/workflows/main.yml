@@ -1,0 +1,28 @@
+name: CI
+on:
+  schedule:
+  - cron: "0 * * * 2"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+    - name: Monitor sublist3r
+      run: |
+        git clone https://github.com/aboul3la/Sublist3r.git
+        cd Sublist3r
+        git rev-parse master > Sublist3r_commit
+    - name: Commit Sublist3r_commit
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add Sublist3r_commit
+        git commit -m "New sublist3r version" -a
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
