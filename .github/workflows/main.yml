@@ -10,9 +10,10 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         fetch-depth: 0
-        version_file: .github/.remote_versions
+        version_file: .remote_versions
     - name: Monitor changes
       run: |
+        set
         git ls-remote https://github.com/aboul3la/Sublist3r.git HEAD >  "${INPUT_VERSION_FILE}"
     - name: Commit and Push
       run: |
