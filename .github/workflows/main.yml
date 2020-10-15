@@ -1,7 +1,7 @@
 name: CI
 on:
-  issues:
-    types: [opened]
+  schedule:
+  - cron: "0 * * * 2"
 jobs:
   build:
     env:
@@ -15,7 +15,6 @@ jobs:
         fetch-depth: 0
     - name: Monitor changes
       run: |
-        set
         git ls-remote https://github.com/aboul3la/Sublist3r.git HEAD >  "${VERSION_FILE}"
     - name: Commit and Push
       run: |
