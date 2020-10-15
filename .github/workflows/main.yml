@@ -4,23 +4,25 @@ on:
     types: [opened]
 jobs:
   build:
+    env:
+      VERSION_FILE: .github/.remote_versions
+      TOKEN: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         fetch-depth: 0
-        version_file: .remote_versions
     - name: Monitor changes
       run: |
         set
-        git ls-remote https://github.com/aboul3la/Sublist3r.git HEAD >  "${INPUT_VERSION_FILE}"
+        git ls-remote https://github.com/aboul3la/Sublist3r.git HEAD >  "${VERSION_FILE}"
     - name: Commit and Push
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         if [ $(git status --porcelain=v1 2>/dev/null | wc -l) != "0" ]; then
-            git add "${INPUT_VERSION_FILE}"
+            git add "${VERSION_FILE}"
             git commit -m "Remote version change" -a
-            git push "https://${GITHUB_ACTOR}:${INPUT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF} --follow-tags
+            git push "https://${GITHUB_ACTOR}:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF} --follow-tags
         fi
